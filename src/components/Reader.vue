@@ -102,7 +102,7 @@
         let SIDS = decodedString.split(':')
         let address = SIDS[0]
         app.address = address
-        let readed = await app.scrypta.post('/read', { address: address })
+        let readed = await app.scrypta.post('/read', { address: address, protocol: 'register://' })
         app.isReading = true
         app.openQR = false
         if(readed.data.length > 0){
