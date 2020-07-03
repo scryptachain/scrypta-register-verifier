@@ -9,7 +9,6 @@
     </div>
     <div v-if="isReading" style="padding:25vh 0">Reading card, please wait...</div>
     <div v-if="Object.keys(blobUrls).length > 0 && !isReading">
-      <h3>Select a file to read:</h3>
       <b-select v-model="selectedFile" placeholder="Select a file first">
         <option v-for="name in names" v-bind:key="name" :value="name">{{ name }}</option>
       </b-select>
@@ -113,7 +112,7 @@
               let verify = await app.scrypta.verifyMessage(message.pubKey, message.signature, message.message)
               if(verify !== false && Certificate.file !== undefined){
                 app.blockchainUrl = 'https://proof.scryptachain.org/#/uuid/' + readed.data[z].uuid
-                let original = await app.axios.get('https://'+ readed.data[z].collection+'.digitaloceanspaces.com/' + address + '/' + Certificate.file, {responseType: 'arraybuffer'})
+                let original = await app.axios.get('https://'+ readed.data[z].collection+'/scryptaregister/' + address + '/' + Certificate.file, {responseType: 'arraybuffer'})
                 let ft = await FileType.fromBuffer(original.data)
                 let checkhash = crypto.createHash("sha256").update(Buffer(original.data)).digest("hex")
                 let name = LZUTF8.decompress(Certificate.title, { inputEncoding: 'Base64' })
@@ -145,11 +144,13 @@
             message: "Nothing to read.",
             type: "is-danger"
           });
+          app.isReading = false
+          app.showQR = true
         } 
       },
      async savePDF(){
         const app = this
-        let original = await app.axios.get('https://'+app.files[app.selectedFile].endpoint+'.digitaloceanspaces.com/' + app.address + '/' + app.files[app.selectedFile].hash,{responseType: 'arraybuffer'})
+        let original = await app.axios.get('https://'+app.files[app.selectedFile].endpoint+'/scryptaregister/' + app.address + '/' + app.files[app.selectedFile].hash,{responseType: 'arraybuffer'})
         let ft = await FileType.fromBuffer(original.data)
         let checkhash = crypto.createHash("sha256").update(Buffer(original.data)).digest("hex")
         if(app.files[app.selectedFile].hash === checkhash){
