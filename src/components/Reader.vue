@@ -1,13 +1,13 @@
 <template>
   <div class="hello">
-    <div v-if="Object.keys(blobUrls).length === 0 && !isReading" style="padding:20vh 0">
+    <div v-if="Object.keys(blobUrls).length === 0 && !isReading && !urlscan" style="padding:20vh 0">
       <div v-if="!openQR">
-        Open the camera and read the QR code card<br><br>
+        Open the camera and read the QR code<br><br>
       </div>
       <b-button v-if="!openQR" type="is-primary" v-on:click="showQR" size="is-large">OPEN CAMERA</b-button>
       <qrcode-stream v-if="openQR" @decode="onDecode"></qrcode-stream>
     </div>
-    <div v-if="isReading" style="padding:25vh 0">Reading card, please wait...</div>
+    <div v-if="isReading" style="padding:25vh 0">Reading address, please wait...</div>
     <div v-if="Object.keys(blobUrls).length > 0 && !isReading">
       <b-select v-model="selectedFile" placeholder="Select a file first">
         <option v-for="name in names" v-bind:key="name" :value="name">{{ name }}</option>
@@ -46,6 +46,7 @@
   import pdf from 'vue-pdf'
 
   export default {
+    props: ['urlscan'],
     components: {
       pdf
     },
@@ -74,11 +75,9 @@
     },
     async mounted() {
       const app = this
-      app.wallet = await app.scrypta.returnDefaultIdentity()
-      let SIDS = app.wallet.split(':')
-      app.address = SIDS[0]
-      let identity = await app.scrypta.returnIdentity(app.address)
-      app.wallet = identity
+      if(app.urlscan !== undefined){
+        app.scanAddress(app.urlscan)
+      }
     },
     methods: {
       showQR(){
@@ -96,10 +95,8 @@
           app.currentPage = app.currentPage + 1
         }
       },
-      async onDecode (decodedString) {
+      async scanAddress(address){
         const app = this
-        let SIDS = decodedString.split(':')
-        let address = SIDS[0]
         app.address = address
         let readed = await app.scrypta.post('/read', { address: address, protocol: 'register://' })
         app.isReading = true
@@ -144,9 +141,18 @@
             message: "Nothing to read.",
             type: "is-danger"
           });
+          if(app.urlscan !== undefined){
+            window.location = '/#/'
+          }
           app.isReading = false
           app.showQR = true
         } 
+      },
+      async onDecode (decodedString) {
+        const app = this
+        let SIDS = decodedString.split(':')
+        let address = SIDS[0]
+        app.scanAddress(address)
       },
      async savePDF(){
         const app = this
