@@ -113,7 +113,7 @@
               let verify = await app.scrypta.verifyMessage(message.pubKey, message.signature, message.message)
               if(verify !== false && Certificate.file !== undefined){
                 app.blockchainUrl = 'https://proof.scryptachain.org/#/uuid/' + readed.data[z].uuid
-                let original = await app.axios.get('https://'readed.data[z].collection+'.digitaloceanspaces.com/' + address + '/' + Certificate.file, {responseType: 'arraybuffer'})
+                let original = await app.axios.get('https://'+ readed.data[z].collection+'.digitaloceanspaces.com/' + address + '/' + Certificate.file, {responseType: 'arraybuffer'})
                 let ft = await FileType.fromBuffer(original.data)
                 let checkhash = crypto.createHash("sha256").update(Buffer(original.data)).digest("hex")
                 let name = LZUTF8.decompress(Certificate.title, { inputEncoding: 'Base64' })
