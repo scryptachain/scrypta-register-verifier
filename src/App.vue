@@ -4,12 +4,12 @@
         <template slot="brand">
           <b-navbar-item tag="router-link" :to="{ path: '/' }">
             <img src="/logo.png" style="margin-right:15px" />
-            <b>Scrypta Blockchain Register</b>
+            <b>Scrypta Documenta</b>
           </b-navbar-item>
         </template>
       </b-navbar>
       <router-view />
-      <hr />Scrypta Blockchain Register<br>powered by
+      <hr />Scrypta Docuemnta<br>developed by
       <a href="https://scrypta.foundation" target="_blank">Scrypta Foundation</a>.
       <br />
       <br />
