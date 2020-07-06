@@ -9,7 +9,7 @@
         </template>
       </b-navbar>
       <router-view />
-      <hr />Scrypta Docuemnta<br>developed by
+      <hr />Scrypta Documenta<br>developed by
       <a href="https://scrypta.foundation" target="_blank">Scrypta Foundation</a>.
       <br />
       <br />
